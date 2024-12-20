@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        h1 {
+            color: #e74c3c;
+        }
+
+        input, select, button {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+        }
+
+        button {
+            background-color: #e74c3c;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #c0392b;
+        }
+
+        #profilePic {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        #profileInfo {
+            text-align: center;
+        }
+
+        input[type="file"] {
+            margin: 10px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="registrationContainer">
+        <h1>Регистрация</h1>
+        <form id="registrationForm">
+            <label for="surname">Фамилия:</label>
+            <input type="text" id="surname" required><br>
+
+            <label for="name">Имя:</label>
+            <input type="text" id="name" required><br>
+
+            <label for="age">Возраст:</label>
+            <input type="number" id="age" required><br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" required><br>
+
+            <label for="birthdate">Дата рождения:</label>
+            <input type="date" id="birthdate" required><br>
+
+            <label for="phone">Номер телефона:</label>
+            <input type="tel" id="phone" required><br>
+
+            <label for="address">Адрес:</label>
+            <input type="text" id="address" required><br>
+
+            <label for="location">Место обработки:</label>
+            <select id="location" required>
+                <option value="Ош">Ош</option>
+                <option value="Бишкек">Бишкек</option>
+                <option value="Баткен">Баткен</option>
+            </select><br>
+
+            <button type="submit">Зарегистрироваться</button>
+        </form>
+        <button id="goToProfile" class="hidden" onclick="showProfile()">Перейти в профиль</button>
+    </div>
+
+    <div class="container hidden" id="profileContainer">
+        <h1>Ваш профиль</h1>
+        <img id="profilePic" src="default.jpg" alt="Фото профиля">
+        <ul id="dataList"></ul>
+        <input type="file" id="profilePhoto" onchange="updateProfilePic()"><br>
+        <button onclick="editProfile()">Изменить данные профиля</button>
+    </div>
+
+    <script>
+        document.getElementById("registrationForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const surname = document.getElementById("surname").value;
+            const name = document.getElementById("name").value;
+            const age = document.getElementById("age").value;
+            const email = document.getElementById("email").value;
+            const birthdate = document.getElementById("birthdate").value;
+            const phone = document.getElementById("phone").value;
+            const address = document.getElementById("address").value;
+            const location = document.getElementById("location").value;
+
+            // Сохранение данных в локальное хранилище для последующего использования
+            localStorage.setItem("surname", surname);
+            localStorage.setItem("name", name);
+            localStorage.setItem("age", age);
+            localStorage.setItem("email", email);
+            localStorage.setItem("birthdate", birthdate);
+            localStorage.setItem("phone", phone);
+            localStorage.setItem("address", address);
+            localStorage.setItem("location", location);
+
+            // Уведомление об успешной регистрации
+            alert("Регистрация прошла успешно!");
+
+            // Показать кнопку для перехода в профиль
+            document.getElementById("goToProfile").classList.remove("hidden");
+
+            // Скрыть форму регистрации
+            document.getElementById("registrationContainer").classList.add("hidden");
+        });
+
+        // Функция для отображения профиля
+        function showProfile() {
+            // Скрыть форму регистрации и показать профиль
+            document.getElementById("profileContainer").classList.remove("hidden");
+
+            const profileData = `
+                <li><strong>Фамилия:</strong> ${localStorage.getItem("surname")}</li>
+                <li><strong>Имя:</strong> ${localStorage.getItem("name")}</li>
+                <li><strong>Возраст:</strong> ${localStorage.getItem("age")}</li>
+                <li><strong>Email:</strong> ${localStorage.getItem("email")}</li>
+                <li><strong>Дата рождения:</strong> ${localStorage.getItem("birthdate")}</li>
+                <li><strong>Номер телефона:</strong> ${localStorage.getItem("phone")}</li>
+                <li><strong>Адрес:</strong> ${localStorage.getItem("address")}</li>
+                <li><strong>Место обработки:</strong> ${localStorage.getItem("location")}</li>
+            `;
+            
+            document.getElementById("dataList").innerHTML = profileData;
+        }
+
+        // Функция для обновления фотографии профиля
+        function updateProfilePic() {
+            const fileInput = document.getElementById("profilePhoto");
+            const profilePic = document.getElementById("profilePic");
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                profilePic.src = e.target.result;
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        // Функция для редактирования данных профиля (перенаправление на форму регистрации)
+        function editProfile() {
+            // Показать форму регистрации и скрыть профиль
+            document.getElementById("registrationContainer").classList.remove("hidden");
+            document.getElementById("profileContainer").classList.add("hidden");
+
+            // Очистить форму регистрации
+            document.getElementById("registrationForm").reset();
+        }
+    </script>
+</body>
+</html>
